@@ -1,286 +1,482 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" data-theme="dark">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Portfolio - Developer & Designer</title>
-  <link rel="shortcut icon" type="image/png" href="http://yasamnl.great-site.net/assets/icon.png">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-  <script src="https://unpkg.com/lucide@latest"></script>
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    
-    body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      overflow: hidden;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    }
-    
-    /* Loading Screen */
-    .loader {
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 9999;
-      transition: opacity 0.5s ease;
-      flex-direction: column;
-      gap: 20px;
-    }
-    
-    .loader.hidden {
-      opacity: 0;
-      pointer-events: none;
-    }
-    
-    .loader-content {
-      text-align: center;
-      color: white;
-    }
-    
-    .loader-icon {
-      animation: pulse 1.5s ease-in-out infinite;
-    }
-    
-    @keyframes pulse {
-      0%, 100% { transform: scale(1); opacity: 1; }
-      50% { transform: scale(1.1); opacity: 0.8; }
-    }
-    
-    .spinner {
-      width: 50px;
-      height: 50px;
-      border: 4px solid rgba(255, 255, 255, 0.3);
-      border-top-color: white;
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-      margin: 0 auto 20px;
-    }
-    
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-    
-    .loader-text {
-      font-size: 1rem;
-      font-weight: 500;
-      opacity: 0.9;
-    }
-    
-    .loader-subtext {
-      font-size: 0.85rem;
-      opacity: 0.7;
-      margin-top: 4px;
-    }
-    
-    /* Image Placeholder Icons */
-    .image-placeholder {
-      width: 100%;
-      height: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: linear-gradient(135deg, #667eea33, #764ba233);
-      color: white;
-    }
-    
-    .image-placeholder .lucide {
-      width: 48px;
-      height: 48px;
-      opacity: 0.8;
-    }
-    
-    .image-placeholder.article { background: linear-gradient(135deg, #3b82f633, #8b5cf633); }
-    .image-placeholder.project { background: linear-gradient(135deg, #10b98133, #3b82f633); }
-    .image-placeholder.karya { background: linear-gradient(135deg, #f59e0b33, #ef444433); }
-    
-    /* Iframe */
-    iframe {
-      width: 100%;
-      height: 100vh;
-      border: none;
-      display: block;
-      opacity: 0;
-      transition: opacity 0.3s ease;
-    }
-    
-    iframe.loaded {
-      opacity: 1;
-    }
-    
-    /* Error State */
-    .error-state {
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: var(--bg-light, #f8f9fc);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      flex-direction: column;
-      gap: 20px;
-      padding: 20px;
-      text-align: center;
-    }
-    
-    .error-state.show {
-      display: flex;
-    }
-    
-    .error-state .icon {
-      width: 64px;
-      height: 64px;
-      color: #ef4444;
-      margin-bottom: 16px;
-    }
-    
-    .error-state h3 {
-      font-size: 1.2rem;
-      font-weight: 600;
-      color: #1a1a2e;
-      margin-bottom: 8px;
-    }
-    
-    .error-state p {
-      font-size: 0.9rem;
-      color: #64748b;
-      max-width: 400px;
-    }
-    
-    .error-state .btn {
-      margin-top: 16px;
-      padding: 10px 24px;
-      background: linear-gradient(135deg, #667eea, #764ba2);
-      color: white;
-      border: none;
-      border-radius: 10px;
-      font-size: 0.9rem;
-      font-weight: 600;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      transition: transform 0.2s;
-    }
-    
-    .error-state .btn:hover {
-      transform: translateY(-2px);
-    }
-    
-    /* Dark mode support */
-    @media (prefers-color-scheme: dark) {
-      .error-state {
-        background: #1e1e2e;
-      }
-      .error-state h3 {
-        color: #e2e8f0;
-      }
-      .error-state p {
-        color: #a0aec0;
-      }
-    }
-  </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Ilyas — Mahasiswa Informatika, Developer & Designer. Building in silence, shipping with purpose." />
+  <meta property="og:title" content="Ilyas — Shadow Protocol" />
+  <meta property="og:description" content="Portfolio of Ilyas — Informatika student & developer" />
+  <meta property="og:type" content="website" />
+  <title>ILYAS — Shadow Protocol</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&family=Noto+Serif+JP:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%2360a5fa'/%3E%3Cstop offset='50%25' stop-color='%23a78bfa'/%3E%3Cstop offset='100%25' stop-color='%23f472b6'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='100' height='100' rx='20' fill='%230a0e1a'/%3E%3Ctext x='50' y='72' font-family='serif' font-size='70' font-weight='bold' text-anchor='middle' fill='url(%23g)'%3E影%3C/text%3E%3C/svg%3E" />
+
+  <!-- Icons -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js" defer></script>
+
+  <!-- Three.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="css/main.css" />
+  <link rel="stylesheet" href="css/animations.css" />
 </head>
 <body>
-  <!-- Loading Screen with Icons -->
-  <div class="loader" id="loader">
-    <div class="loader-content">
-      <div class="loader-icon">
-        <i data-lucide="loader-2" class="lucide spinner"></i>
+
+  <!-- ========== LOADING RITUAL ========== -->
+  <div id="loader" class="loader" aria-label="Loading">
+    <div class="loader-inner">
+      <div class="loader-kanji">始</div>
+      <div class="loader-terminal">
+        <div class="terminal-line" id="term-line-1">&gt; booting shadow_protocol.exe</div>
+        <div class="terminal-line" id="term-line-2"></div>
+        <div class="terminal-line" id="term-line-3"></div>
       </div>
-      <p class="loader-text">Loading Portfolio...</p>
-      <p class="loader-subtext">Thanks For Waiting</p>
+      <div class="loader-bar">
+        <div class="loader-bar-fill" id="loader-fill"></div>
+      </div>
+      <div class="loader-percent" id="loader-percent">0%</div>
     </div>
   </div>
 
-  <!-- Error State with Icon -->
-  <div class="error-state" id="error-state">
-    <i data-lucide="alert-circle" class="lucide icon"></i>
-    <h3>Oops! Terjadi kesalahan</h3>
-    <p>Portfolio tidak dapat dimuat. Silakan periksa koneksi internet atau coba refresh halaman.</p>
-    <button class="btn" onclick="location.reload()">
-      <i data-lucide="refresh-ccw" class="lucide" style="width:16px;height:16px"></i>
-      Coba Lagi
-    </button>
+  <!-- ========== THREE.JS BACKGROUND ========== -->
+  <canvas id="three-bg" class="three-bg"></canvas>
+
+  <!-- ========== NAVIGATION ========== -->
+  <nav class="nav" id="nav">
+    <div class="nav-inner">
+      <a href="#home" class="nav-logo">
+        <span class="kanji">影</span>
+        <span class="brand">yas<span class="accent">_amnl</span></span>
+      </a>
+      <div class="nav-links">
+        <a href="#home" data-scroll>Home</a>
+        <a href="#tentang" data-scroll>Tentang</a>
+        <a href="#skills" data-scroll>Skills</a>
+        <a href="#proyek" data-scroll>Proyek</a>
+        <a href="#artikel" data-scroll>Artikel</a>
+        <a href="#kontak" data-scroll>Kontak</a>
+      </div>
+      <div class="nav-controls">
+      <button id="music-toggle" class="icon-btn" aria-label="Toggle music" title="Toggle ambient music">
+        <i data-lucide="volume-x" class="lucide"></i>
+      </button>
+      <button id="theme-toggle" class="icon-btn" aria-label="Toggle theme" title="Toggle theme">
+        <i data-lucide="moon" class="lucide"></i>
+      </button>
+      <!-- BARU: Hamburger -->
+      <button id="menu-toggle" class="icon-btn menu-toggle" aria-label="Buka menu">
+        <i data-lucide="menu" class="lucide"></i>
+      </button>
+    </div>
+    </div>
+  </nav>
+    </nav>
+
+  <!-- BARU: SIDE MENU (drawer) -->
+  <div class="side-menu" id="side-menu">
+    <div class="side-menu-backdrop"></div>
+    <aside class="side-menu-panel">
+      <div class="side-menu-header">
+        <span class="kanji">影</span>
+        <button id="menu-close" class="icon-btn" aria-label="Tutup menu">
+          <i data-lucide="x" class="lucide"></i>
+        </button>
+      </div>
+      <nav class="side-menu-links">
+        <a href="#home" data-scroll>Home</a>
+        <a href="#tentang" data-scroll>Tentang</a>
+        <a href="#skills" data-scroll>Skills</a>
+        <a href="#proyek" data-scroll>Proyek</a>
+        <a href="#karya" data-scroll>Karya</a>
+        <a href="#artikel" data-scroll>Artikel</a>
+        <a href="#kontak" data-scroll>Kontak</a>
+      </nav>
+    </aside>
+  </div>
+  <!-- ========== CHAPTER MARKER ========== -->
+  <div class="chapter-marker" id="chapter-marker">
+    <div class="chapter-kanji" id="chapter-kanji">道</div>
+    <div class="chapter-line"></div>
+    <div class="chapter-label" id="chapter-label">01 / PATH</div>
   </div>
 
-  <!-- Embed Google Apps Script -->
-  <iframe 
-    src="https://script.google.com/macros/s/AKfycbx1E2HUIQ47EBE_9KI0gF7TL4kjY-uI-uwLncJAFUlyZP3Fwa4ix7UoVCEOueP8268-/exec" 
-    id="portfolio-frame"
-    onload="onFrameLoad()"
-    onerror="onFrameError()"
-  ></iframe>
+  <!-- ========== HERO ========== -->
+  <section class="hero" id="home" data-chapter="01" data-kanji="道" data-label="PATH">
+    <div class="container hero-inner">
+      <div class="hero-badge">
+        <i data-lucide="terminal" class="lucide icon-sm"></i>
+        <span>System.status = "online"</span>
+      </div>
+      <h1 class="hero-title">
+        <span class="hero-line">Hello, World.</span>
+        <span class="hero-line">I'm <span class="gradient-text">Ilyas</span>.</span>
+      </h1>
+      <p class="hero-subtitle">
+        <span class="typed" id="typed-text"></span><span class="cursor">_</span>
+      </p>
+      <p class="hero-description">
+        Mahasiswa Informatika @ UWKS. Passionate about <strong>web development</strong>, 
+        <strong>UI/UX design</strong>, dan menciptakan <strong>impactful technology</strong>.
+        Building in silence, shipping with purpose.
+      </p>
+      <div class="hero-cta">
+        <a href="#proyek" data-scroll class="btn btn-primary">
+          <i data-lucide="rocket" class="lucide icon-sm"></i>
+          <span>Explore Projects</span>
+        </a>
+        <a href="#artikel" data-scroll class="btn btn-outline">
+          <i data-lucide="file-text" class="lucide icon-sm"></i>
+          <span>Read Articles</span>
+        </a>
+      </div>
+      <div class="hero-meta">
+        <div class="meta-item">
+          <div class="meta-value" id="stat-projects">0</div>
+          <div class="meta-label">Projects</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-value" id="stat-articles">0</div>
+          <div class="meta-label">Articles</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-value">∞</div>
+          <div class="meta-label">Curiosity</div>
+        </div>
+      </div>
+      <div class="social-links">
+        <a href="https://github.com/ilyas09012004/" class="social-link" title="GitHub"><i data-lucide="braces" class="lucide"></i></a>
+        <a href="https://id.pinterest.com/mi658672/" class="social-link" title="pinterest"><i data-lucide="brush" class="lucide"></i></a>
+        <a href="https://www.instagram.com/yas_amnl" class="social-link" title="Instagram"><i data-lucide="aperture" class="lucide"></i></a>
+        <a href="https://www.tiktok.com/@yas_amnl" class="social-link" title="Tiktok"><i data-lucide="file-play" class="lucide"></i></a>
+      </div>
+    </div>
+    <div class="scroll-indicator">
+      <i data-lucide="chevrons-down" class="lucide"></i>
+      <span>Scroll to enter</span>
+    </div>
+  </section>
 
-  <script>
-    // Initialize Lucide icons
-    function initIcons() {
-      if (typeof lucide !== 'undefined') {
-        lucide.createIcons();
-      }
-    }
+  <!-- ========== TENTANG ========== -->
+  <section class="section section-chapter" id="tentang" data-chapter="02" data-kanji="静" data-label="STILL">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-tag">02 / ABOUT</span>
+        <h2 class="section-title">The <span class="gradient-text">Protocol</span></h2>
+        <p class="section-subtitle">Mengenal lebih dekat perjalanan saya di dunia teknologi</p>
+      </div>
 
-    // Handle iframe load
-    function onFrameLoad() {
-      const loader = document.getElementById('loader');
-      const iframe = document.getElementById('portfolio-frame');
-      
-      // Hide loader with delay for smooth transition
-      setTimeout(() => {
-        loader.classList.add('hidden');
-        iframe.classList.add('loaded');
-        initIcons();
-      }, 800);
-      
-      // Fallback: hide loader after 10 seconds max
-      setTimeout(() => {
-        if (!loader.classList.contains('hidden')) {
-          loader.classList.add('hidden');
-          iframe.classList.add('loaded');
-        }
-      }, 10000);
-    }
+      <div class="about-grid">
+        <div class="about-card reveal reveal-delay-1">
+          <div class="about-card-icon">
+            <i data-lucide="graduation-cap" class="lucide"></i>
+          </div>
+          <h3>Pendidikan</h3>
+          <p>Mahasiswa aktif S1 Informatika di <strong>Universitas Wijaya Kusuma Surabaya</strong>. Semester 8, fokus pada web engineering dan software architecture.</p>
+        </div>
 
-    // Handle iframe error
-    function onFrameError() {
-      const loader = document.getElementById('loader');
-      const errorState = document.getElementById('error-state');
-      
-      loader.classList.add('hidden');
-      errorState.classList.add('show');
-      initIcons();
-    }
+        <div class="about-card reveal reveal-delay-2">
+          <div class="about-card-icon">
+            <i data-lucide="sparkles" class="lucide"></i>
+          </div>
+          <h3>Passion</h3>
+          <p><strong>Web development</strong>, UI/UX design, dan <strong>teknologi berdampak</strong>. Percaya bahwa kode terbaik adalah kode yang memecahkan masalah nyata.</p>
+        </div>
 
-    // Fallback timeout
-    setTimeout(() => {
-      const loader = document.getElementById('loader');
-      const iframe = document.getElementById('portfolio-frame');
-      
-      if (!loader.classList.contains('hidden') && iframe.readyState !== 'complete') {
-        // Check if iframe is actually loaded
-        try {
-          if (iframe.contentDocument) {
-            onFrameLoad();
-          }
-        } catch (e) {
-          onFrameError();
-        }
-      }
-    }, 15000);
+        <div class="about-card reveal reveal-delay-3">
+          <div class="about-card-icon">
+            <i data-lucide="zap" class="lucide"></i>
+          </div>
+          <h3>Visi</h3>
+          <p>Menciptakan <strong>solusi digital</strong> yang bermanfaat bagi masyarakat. Dari local project sampai impact global.</p>
+        </div>
+      </div>
 
-    // Initialize on page load
-    window.addEventListener('load', () => {
-      initIcons();
-    });
+      <blockquote class="about-quote reveal reveal-delay-4">
+        <i data-lucide="quote" class="lucide"></i>
+        <p>Saya percaya teknologi harus digunakan untuk mempermudah kehidupan dan membawa dampak positif. Saat ini sedang menyelesaikan studi, sambil aktif membangun proyek web pribadi dan kolaboratif.</p>
+      </blockquote>
+    </div>
+  </section>
 
-    // Handle visibility change (tab switch)
-    document.addEventListener('visibilitychange', () => {
-      if (document.visibilityState === 'visible') {
-        initIcons();
-      }
-    });
-  </script>
+  <!-- ========== SKILLS ========== -->
+  <section class="section" id="skills" data-chapter="03" data-kanji="工" data-label="CRAFT">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-tag">03 / ARSENAL</span>
+        <h2 class="section-title">Tech <span class="gradient-text">Stack</span></h2>
+        <p class="section-subtitle">Keterampilan dan tools yang saya kuasai</p>
+      </div>
+
+      <div class="skills-grid">
+        <div class="skill-card reveal">
+          <div class="skill-header">
+            <i data-lucide="palette" class="lucide"></i>
+            <h3>Graphic Design</h3>
+          </div>
+          <p class="skill-desc">Visual communication & branding</p>
+          <div class="skill-tags">
+            <span class="skill-tag">Canva</span>
+            <span class="skill-tag">CorelDraw</span>
+            <span class="skill-tag">Adobe Photoshop</span>
+          </div>
+        </div>
+
+        <div class="skill-card reveal reveal-delay-1">
+          <div class="skill-header">
+            <i data-lucide="code-2" class="lucide"></i>
+            <h3>Programming</h3>
+          </div>
+          <p class="skill-desc">Web development & logic</p>
+          <div class="skill-tags">
+            <span class="skill-tag">HTML5</span>
+            <span class="skill-tag">CSS3</span>
+            <span class="skill-tag">JavaScript</span>
+            <span class="skill-tag">PHP</span>
+            <span class="skill-tag">Node.js</span>
+          </div>
+        </div>
+
+        <div class="skill-card reveal reveal-delay-2">
+          <div class="skill-header">
+            <i data-lucide="database" class="lucide"></i>
+            <h3>Tools & Platform</h3>
+          </div>
+          <p class="skill-desc">Workflow & collaboration</p>
+          <div class="skill-tags">
+            <span class="skill-tag">Git</span>
+            <span class="skill-tag">GitHub</span>
+            <span class="skill-tag">VS Code</span>
+            <span class="skill-tag">Figma</span>
+          </div>
+        </div>
+
+        <div class="skill-card reveal reveal-delay-3">
+          <div class="skill-header">
+            <i data-lucide="file-spreadsheet" class="lucide"></i>
+            <h3>Office Suite</h3>
+          </div>
+          <p class="skill-desc">Documentation & reporting</p>
+          <div class="skill-tags">
+            <span class="skill-tag">Word</span>
+            <span class="skill-tag">Excel</span>
+            <span class="skill-tag">PowerPoint</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- PENDIDIKAN -->
+      <div class="section-header reveal" style="margin-top: 100px;">
+        <span class="section-tag">03.1 / JOURNEY</span>
+        <h2 class="section-title">Education <span class="gradient-text">Path</span></h2>
+      </div>
+
+      <div class="timeline">
+        <div class="timeline-item reveal">
+          <div class="timeline-marker"></div>
+          <div class="timeline-content">
+            <span class="timeline-year">2022 — Present</span>
+            <h4>Universitas Wijaya Kusuma Surabaya</h4>
+            <p class="timeline-role">S1 Informatika — Semester 8</p>
+            <p>Fokus pada web engineering, software development, dan UI/UX. Aktif mengerjakan proyek pribadi dan kolaboratif.</p>
+          </div>
+        </div>
+        <div class="timeline-item reveal reveal-delay-1">
+          <div class="timeline-marker"></div>
+          <div class="timeline-content">
+            <span class="timeline-year">2019 — 2022</span>
+            <h4>Madrasah Aliyah Darussalam</h4>
+            <p class="timeline-role">Senior High School</p>
+            <p>Pendidikan menengah atas dengan fokus ilmu agama dan umum.</p>
+          </div>
+        </div>
+        <div class="timeline-item reveal reveal-delay-2">
+          <div class="timeline-marker"></div>
+          <div class="timeline-content">
+            <span class="timeline-year">2016 — 2019</span>
+            <h4>Madrasah Tsanawiyah Darussalam</h4>
+            <p class="timeline-role">Junior High School</p>
+            <p>Yayasan Darussalam.</p>
+          </div>
+        </div>
+        <div class="timeline-item reveal reveal-delay-3">
+          <div class="timeline-marker"></div>
+          <div class="timeline-content">
+            <span class="timeline-year">2010 — 2016</span>
+            <h4>Madrasah Ibtidaiyah AL-Huda II</h4>
+            <p class="timeline-role">Elementary School</p>
+            <p>Yayasan Al Huda II.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== PROYEK ========== -->
+  <section class="section section-chapter" id="proyek" data-chapter="04" data-kanji="建" data-label="BUILD">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-tag">04 / WORKS</span>
+        <h2 class="section-title">Featured <span class="gradient-text">Projects</span></h2>
+        <p class="section-subtitle">Beberapa proyek yang telah saya kerjakan</p>
+      </div>
+      <div id="proyek-container" class="cards-grid">
+        <div class="pagination-dots" id="proyek-pagination">
+          <div class="spinner"></div>
+          <p>Loading projects...</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== KARYA ========== -->
+  <section class="section" id="karya" data-chapter="05" data-kanji="芸" data-label="ART">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-tag">05 / GALLERY</span>
+        <h2 class="section-title">Creative <span class="gradient-text">Works</span></h2>
+        <p class="section-subtitle">Desain, fotografi, dan konten kreatif</p>
+      </div>
+
+      <div class="karya-tabs reveal">
+        <button class="karya-tab active" data-filter="semua">All</button>
+        <button class="karya-tab" data-filter="fotografi">
+          <i data-lucide="camera" class="lucide icon-sm"></i> Photography
+        </button>
+        <button class="karya-tab" data-filter="desain">
+          <i data-lucide="palette" class="lucide icon-sm"></i> Design
+        </button>
+      </div>
+
+      <div id="karya-container" class="cards-grid">
+        <div class="pagination-dots" id="karya-pagination">
+          <div class="spinner"></div>
+          <p>Loading gallery...</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== ARTIKEL ========== -->
+  <section class="section section-chapter" id="artikel" data-chapter="06" data-kanji="書" data-label="WRITE">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-tag">06 / JOURNAL</span>
+        <h2 class="section-title">Latest <span class="gradient-text">Articles</span></h2>
+        <p class="section-subtitle">Tulisan dan pemikiran yang saya bagikan</p>
+      </div>
+      <div id="artikel-container" class="cards-grid">
+        <div class="loading-state">
+          <div class="spinner"></div>
+          <p>Loading articles...</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== KONTAK ========== -->
+  <section class="section section-chapter" id="kontak" data-chapter="07" data-kanji="光" data-label="CONNECT">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-tag">07 / TRANSMIT</span>
+        <h2 class="section-title">Get in <span class="gradient-text">Touch</span></h2>
+        <p class="section-subtitle">Mari berdiskusi tentang proyek atau kolaborasi</p>
+      </div>
+
+      <div class="contact-wrapper">
+        <div class="contact-info reveal">
+          <div class="contact-item">
+            <div class="contact-icon"><i data-lucide="mail" class="lucide"></i></div>
+            <div>
+              <h4>Email</h4>
+              <a href="mailto:mi558672@gmail.com">mi558672@gmail.com</a>
+            </div>
+          </div>
+          <div class="contact-item">
+            <div class="contact-icon"><i data-lucide="map-pin" class="lucide"></i></div>
+            <div>
+              <h4>Location</h4>
+              <p>Gresik, Jawa Timur, Indonesia</p>
+            </div>
+          </div>
+          <div class="contact-item">
+            <div class="contact-icon"><i data-lucide="circle-dot" class="lucide"></i></div>
+            <div>
+              <h4>Status</h4>
+              <p><span class="status-dot"></span> Open for opportunities</p>
+            </div>
+          </div>
+        </div>
+
+        <form class="contact-form reveal reveal-delay-1" id="contact-form">
+          <div id="form-alert" class="form-alert" style="display:none;"></div>
+          <div class="form-group">
+            <label for="nama">Name</label>
+            <input type="text" id="nama" name="nama" placeholder="Your name" required />
+          </div>
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" placeholder="you@example.com" required />
+          </div>
+          <div class="form-group">
+            <label for="pesan">Message</label>
+            <textarea id="pesan" name="pesan" rows="5" placeholder="Tell me about your project..." required></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary btn-block" id="submit-btn">
+            <i data-lucide="send" class="lucide icon-sm"></i>
+            <span>Send Transmission</span>
+          </button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== FOOTER ========== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <span class="kanji">影</span>
+          <span>ILYAS<span class="accent">.protocol</span></span>
+        </div>
+        <div class="footer-tech">
+          <span>built with</span>
+          <span class="tech">HTML · CSS · JS</span>
+          <span>·</span>
+          <span class="tech">Three.js</span>
+          <span>·</span>
+          <span class="tech">AppScript</span>
+        </div>
+        <div class="footer-copy">
+          © 2026 Ilyas — <code>@yas_amnl</code>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ========== MODALS ========== -->
+  <div id="modal" class="modal" role="dialog" aria-modal="true">
+    <div class="modal-backdrop"></div>
+    <div class="modal-dialog">
+      <button class="modal-close" aria-label="Close">
+        <i data-lucide="x" class="lucide"></i>
+      </button>
+      <div class="modal-body" id="modal-body">
+        <!-- Injected by JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Hidden audio -->
+  <audio id="ambient-audio" loop preload="none">
+    <source src="assets/audio/ambient.mp3" type="audio/mpeg" />
+  </audio>
+
+  <!-- App Script -->
+  <script src="js/app.js" defer></script>
 </body>
 </html>
