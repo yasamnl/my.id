@@ -1475,6 +1475,7 @@ input, textarea { font-family: inherit; font-size: inherit; }
   .card-desc {
     font-size: 12.5px;
     display: -webkit-box;
+    line-clamp: 3;
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
@@ -1519,6 +1520,324 @@ input, textarea { font-family: inherit; font-size: inherit; }
   display: flex;
   align-items: center;
   gap: 10px;
+}
+
+/* ---------- MUSIC PROMPT ---------- */
+.music-prompt {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 500;
+  animation: slide-in-up 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+.music-prompt-card {
+  padding: 24px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  max-width: 280px;
+  text-align: center;
+}
+
+.music-icon {
+  width: 56px;
+  height: 56px;
+  margin: 0 auto 16px;
+  background: var(--accent-gradient);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.music-icon .lucide {
+  width: 24px;
+  height: 24px;
+}
+
+.music-prompt-card h3 {
+  font-family: var(--font-display);
+  font-size: 18px;
+  margin-bottom: 8px;
+}
+
+.music-prompt-card p {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-bottom: 20px;
+  line-height: 1.5;
+}
+
+.music-prompt-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+.btn-sm {
+  padding: 10px 18px;
+  font-size: 13px;
+}
+
+/* ---------- ACCORDION ---------- */
+.accordion-content {
+  line-height: 1.7;
+}
+
+.accordion-content h2,
+.accordion-content h3,
+.accordion-content h4 {
+  font-family: var(--font-display);
+  margin: 24px 0 12px;
+  color: var(--text-primary);
+}
+
+.accordion-content h2 { font-size: 24px; }
+.accordion-content h3 { font-size: 20px; }
+.accordion-content h4 { font-size: 18px; }
+
+.accordion-content p {
+  margin-bottom: 16px;
+  color: var(--text-secondary);
+}
+
+.accordion-content ul,
+.accordion-content ol {
+  margin: 16px 0;
+  padding-left: 24px;
+  color: var(--text-secondary);
+}
+
+.accordion-content li {
+  margin-bottom: 8px;
+}
+
+.accordion-content pre {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  overflow-x: auto;
+  margin: 16px 0;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.accordion-content code {
+  font-family: var(--font-mono);
+  background: var(--surface);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 13px;
+  color: var(--accent);
+}
+
+.accordion-content img {
+  max-width: 100%;
+  border-radius: var(--radius);
+  margin: 16px 0;
+}
+
+.accordion-content a {
+  color: var(--accent);
+  text-decoration: underline;
+}
+
+.accordion-content a:hover {
+  color: var(--accent-hover);
+}
+
+.accordion-content blockquote {
+  border-left: 3px solid var(--accent);
+  padding-left: 16px;
+  margin: 16px 0;
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+/* Smooth transition untuk accordion */
+.accordion-body {
+  transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+}
+
+.accordion-item.open .accordion-body {
+  overflow: visible;
+}
+
+/* Mobile optimization */
+@media (max-width: 600px) {
+  .accordion-header {
+    padding: 14px 16px;
+  }
+  
+  .accordion-title {
+    font-size: 14px;
+  }
+  
+  .accordion-content-inner {
+    padding: 16px;
+  }
+}
+
+@keyframes slide-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Auto-hide jika sudah di-enable sebelumnya */
+.music-prompt.hidden {
+  display: none !important;
+}
+
+/* ---------- ACCORDION ---------- */
+.accordion-intro {
+  margin-bottom: 24px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--border);
+}
+
+.accordion-item {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin-bottom: 12px;
+  overflow: hidden;
+  transition: var(--transition);
+}
+
+.accordion-item:hover {
+  border-color: var(--border-strong);
+}
+
+.accordion-item.open {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px var(--accent);
+}
+
+.accordion-header {
+  width: 100%;
+  padding: 16px 20px;
+  background: var(--surface);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  cursor: pointer;
+  transition: var(--transition);
+  border: none;
+  text-align: left;
+}
+
+.accordion-header:hover {
+  background: var(--surface-hover);
+}
+
+.accordion-title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 16px;
+  color: var(--text-primary);
+}
+
+.accordion-icon {
+  width: 20px;
+  height: 20px;
+  transition: transform var(--transition);
+  flex-shrink: 0;
+  color: var(--text-muted);
+}
+
+.accordion-item.open .accordion-icon {
+  transform: rotate(180deg);
+  color: var(--accent);
+}
+
+.accordion-body {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.accordion-content-inner {
+  padding: 20px;
+  background: var(--bg-primary);
+  border-top: 1px solid var(--border);
+}
+
+.accordion-content-inner p {
+  margin-bottom: 12px;
+  line-height: 1.7;
+}
+
+.accordion-content-inner p:last-child {
+  margin-bottom: 0;
+}
+
+.accordion-content-inner ul,
+.accordion-content-inner ol {
+  margin: 12px 0;
+  padding-left: 24px;
+}
+
+.accordion-content-inner li {
+  margin-bottom: 8px;
+  line-height: 1.6;
+}
+
+.accordion-content-inner pre {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 16px;
+  overflow-x: auto;
+  margin: 16px 0;
+  font-family: var(--font-mono);
+  font-size: 13px;
+}
+
+.accordion-content-inner code {
+  font-family: var(--font-mono);
+  background: var(--surface);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 13px;
+}
+
+/* Mobile optimization */
+@media (max-width: 600px) {
+  .accordion-header {
+    padding: 14px 16px;
+  }
+  
+  .accordion-title {
+    font-size: 14px;
+  }
+  
+  .accordion-content-inner {
+    padding: 16px;
+  }
+}
+
+@media (max-width: 600px) {
+  .music-prompt {
+    left: 16px;
+    right: 16px;
+    bottom: 16px;
+  }
+  .music-prompt-card {
+    max-width: none;
+  }
 }
 
 /* ---------- MOBILE: KARYA = JUDUL + KATEGORI ---------- */
@@ -1640,6 +1959,7 @@ input, textarea { font-family: inherit; font-size: inherit; }
     font-size: 14px;
     display: -webkit-box;
     -webkit-line-clamp: 2;
+    line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
     margin-bottom: 4px;

@@ -11,7 +11,7 @@
     // Ganti dengan URL Apps Script kamu setelah deploy
     API_URL: 'https://script.google.com/macros/s/AKfycbx1E2HUIQ47EBE_9KI0gF7TL4kjY-uI-uwLncJAFUlyZP3Fwa4ix7UoVCEOueP8268-/exec',
     // Token rahasia - HARUS SAMA dengan yang di Apps Script
-    API_TOKEN: 'akwjJUUIUHwhidc8956w',
+    API_TOKEN: 'AIienoqhrnc526j',
     SHEET_TABS: {
       artikel: 'ARTIKEL',
       proyek: 'PROYEK',
@@ -142,37 +142,84 @@
   }
 
   // ============ MUSIC ============
-  function initMusic() {
-    const audio = $('#ambient-audio');
-    const btn = $('#music-toggle');
-    if (!audio || !btn) return;
+  // ============ MUSIC (dengan autoplay smart) ============
+function initMusicAggressive() {
+  const audio = $('#ambient-audio');
+  const btn = $('#music-toggle');
+  const prompt = $('#music-prompt');
 
-    audio.volume = 0.18;
+  if (!audio) return;
+  audio.volume = 0.18;
 
-    btn.addEventListener('click', () => {
+  const savedPreference = localStorage.getItem('musicEnabled');
+
+  // Jika sudah pernah enable → langsung play
+  if (savedPreference === 'true') {
+    audio.play().catch(() => {});
+    state.musicEnabled = true;
+    updateMusicIcon(true);
+    return;
+  }
+
+  // Jika belum pernah → tampilkan prompt
+  if (savedPreference === null) {
+    setTimeout(() => {
+      if (prompt) prompt.style.display = 'block';
+    }, 1500);
+  }
+
+  // Aggressive: Begitu user klik/keypress DI MANA SAJA → enable music
+  const enableOnInteraction = () => {
+    if (savedPreference !== 'false' && audio.paused) {
+      audio.play().then(() => {
+        state.musicEnabled = true;
+        localStorage.setItem('musicEnabled', 'true');
+        updateMusicIcon(true);
+        hidePrompt();
+      }).catch(() => {
+        // Masih diblokir, fallback ke manual toggle
+      });
+    }
+    // Remove listener setelah sekali
+    document.removeEventListener('click', enableOnInteraction);
+    document.removeEventListener('keydown', enableOnInteraction);
+  };
+
+  document.addEventListener('click', enableOnInteraction);
+  document.addEventListener('keydown', enableOnInteraction);
+
+  // Manual toggle tetap available
+  if (btn) {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation(); // Prevent trigger enableOnInteraction
       if (audio.paused) {
-        audio.play().then(() => {
-          state.musicEnabled = true;
-          updateMusicIcon(true);
-        }).catch(() => {
-          // Autoplay blocked - user gesture still works
-        });
+        audio.play();
+        state.musicEnabled = true;
+        localStorage.setItem('musicEnabled', 'true');
+        updateMusicIcon(true);
       } else {
         audio.pause();
         state.musicEnabled = false;
+        localStorage.setItem('musicEnabled', 'false');
         updateMusicIcon(false);
       }
     });
   }
 
+  function hidePrompt() {
+    if (prompt) {
+      prompt.style.display = 'none';
+    }
+  }
+
   function updateMusicIcon(playing) {
     const icon = $('#music-toggle .lucide');
     if (!icon) return;
-    const newIcon = playing ? 'volume-2' : 'volume-x';
-    icon.setAttribute('data-lucide', newIcon);
+    icon.setAttribute('data-lucide', playing ? 'volume-2' : 'volume-x');
     if (window.lucide) lucide.createIcons();
     $('#music-toggle').classList.toggle('active', playing);
   }
+}
 
   // ============ NAVIGATION ============
   function initNav() {
@@ -588,7 +635,7 @@ function fetchViaForm(tab) {
         <div class="card-body">
           <span class="card-category">${kategori}</span>
           <h3 class="card-title">${judul}</h3>
-          <p class="card-desc">${preview}${preview.length >= 100 ? '...' : ''}</p>
+          <p class="card-desc">${escapeHtml(stripHtml(normalizeContent(item.konten || '')).substring(0, 120))}...</p>
           <div class="card-meta">
             <span class="card-meta-text">${tanggal}</span>
             <button class="card-arrow" aria-label="Baca artikel"><i data-lucide="arrow-right" class="lucide icon-sm"></i></button>
@@ -613,7 +660,7 @@ function fetchViaForm(tab) {
         <div class="card-body">
           <span class="card-category">${kategori}</span>
           <h3 class="card-title">${judul}</h3>
-          <p class="card-desc">${deskripsi}${deskripsi.length >= 100 ? '...' : ''}</p>
+          <p class="card-desc">${escapeHtml(stripHtml(normalizeContent(item.deskripsi || '')).substring(0, 120))}...</p>
           <div class="card-meta">
             <span class="card-meta-text">${tech}</span>
             <button class="card-arrow" aria-label="Lihat proyek"><i data-lucide="arrow-right" class="lucide icon-sm"></i></button>
@@ -694,55 +741,231 @@ function fetchViaForm(tab) {
   }
 
   // ============ MODAL ============
-  function openModal(type, item) {
-    const modal = $('#modal');
-    const body = $('#modal-body');
-    if (!modal || !body) return;
+  // ============ MODAL dengan ACCORDION ============
+function openModal(type, item) {
+  const modal = $('#modal');
+  const body = $('#modal-body');
+  if (!modal || !body) return;
 
-    let html = '';
+  let html = '';
+  
     if (type === 'artikel') {
-      html = `
-        <span class="badge">${escapeHtml(item.kategori || 'Article')}</span>
-        <h2>${escapeHtml(item.judul)}</h2>
-        <div class="modal-meta">
-          <span><i data-lucide="calendar" class="lucide icon-sm"></i> ${formatDate(item.tanggal)}</span>
-          <span><i data-lucide="user" class="lucide icon-sm"></i> Ilyas</span>
-        </div>
-        ${item.thumbnail_url ? `<div class="modal-image"><img src="${item.thumbnail_url}" alt="${escapeHtml(item.judul)}" /></div>` : ''}
-        <div class="modal-content">${item.konten || ''}</div>
-      `;
-    } else if (type === 'proyek') {
-      html = `
-        <span class="badge">${escapeHtml(item.kategori || 'Project')}</span>
-        <h2>${escapeHtml(item.judul)}</h2>
-        ${item.thumbnail_url ? `<div class="modal-image"><img src="${item.thumbnail_url}" alt="${escapeHtml(item.judul)}" /></div>` : ''}
-        <div class="modal-meta">
-          <span><i data-lucide="wrench" class="lucide icon-sm"></i> ${escapeHtml(item.tech_stack || 'Various')}</span>
-        </div>
-        <div class="modal-content">${escapeHtml(item.deskripsi || '')}</div>
-        <div class="modal-actions">
-          ${item.link_live ? `<a href="${item.link_live}" target="_blank" rel="noopener" class="btn btn-primary"><i data-lucide="external-link" class="lucide icon-sm"></i> Live Demo</a>` : ''}
-          ${item.link_github ? `<a href="${item.link_github}" target="_blank" rel="noopener" class="btn btn-outline"><i data-lucide="github" class="lucide icon-sm"></i> Source Code</a>` : ''}
-        </div>
-      `;
-    } else if (type === 'karya') {
-      html = `
-        <span class="badge">${escapeHtml(item.kategori || 'Work')}</span>
-        <h2>${escapeHtml(item.judul)}</h2>
-        ${item.image_url ? `<div class="modal-image"><img src="${item.image_url}" alt="${escapeHtml(item.judul)}" /></div>` : ''}
-        <div class="modal-meta">
-          <span><i data-lucide="calendar" class="lucide icon-sm"></i> ${escapeHtml(item.tahun || '')}</span>
-          ${item.tags ? `<span><i data-lucide="tag" class="lucide icon-sm"></i> ${escapeHtml(item.tags)}</span>` : ''}
-        </div>
-        <div class="modal-content">${escapeHtml(item.deskripsi || '')}</div>
-      `;
-    }
+    const konten = normalizeContent(item.konten); // ← DECODE di sini
+    html = `
+      <span class="badge">${escapeHtml(item.kategori || 'Article')}</span>
+      <h2>${escapeHtml(item.judul)}</h2>
+      <div class="modal-meta">
+        <span><i data-lucide="calendar" class="lucide icon-sm"></i> ${formatDate(item.tanggal)}</span>
+        <span><i data-lucide="user" class="lucide icon-sm"></i> Ilyas</span>
+        <span><i data-lucide="eye" class="lucide icon-sm"></i> ${item.views || 0} views</span>
+      </div>
+      ${item.thumbnail_url ? `<div class="modal-image"><img src="${escapeHtml(item.thumbnail_url)}" alt="${escapeHtml(item.judul)}" loading="lazy" onerror="this.closest('.modal-image').style.display='none'" /></div>` : ''}
+      <div class="modal-content accordion-content" id="accordion-container">
+        ${konten || '<p>No content available.</p>'}
+      </div>
+    `;
+    trackView('ARTIKEL', item.id);
 
-    body.innerHTML = html;
-    modal.classList.add('active');
-    document.body.style.overflow = 'hidden';
-    if (window.lucide) lucide.createIcons();
+  } else if (type === 'proyek') {
+    const deskripsi = normalizeContent(item.deskripsi); // ← DECODE di sini
+    html = `
+      <span class="badge">${escapeHtml(item.kategori || 'Project')}</span>
+      <h2>${escapeHtml(item.judul)}</h2>
+      ${item.thumbnail_url ? `<div class="modal-image"><img src="${escapeHtml(item.thumbnail_url)}" alt="${escapeHtml(item.judul)}" loading="lazy" onerror="this.closest('.modal-image').style.display='none'" /></div>` : ''}
+      <div class="modal-meta">
+        <span><i data-lucide="wrench" class="lucide icon-sm"></i> ${escapeHtml(item.tech_stack || 'Various')}</span>
+        <span><i data-lucide="eye" class="lucide icon-sm"></i> ${item.views || 0} views</span>
+      </div>
+      <div class="modal-content accordion-content" id="accordion-container">
+        ${deskripsi || '<p>No description available.</p>'}
+      </div>
+      <div class="modal-actions">
+        ${item.link_live ? `<a href="${escapeHtml(item.link_live)}" target="_blank" rel="noopener" class="btn btn-primary"><i data-lucide="external-link" class="lucide icon-sm"></i> Live Demo</a>` : ''}
+        ${item.link_github ? `<a href="${escapeHtml(item.link_github)}" target="_blank" rel="noopener" class="btn btn-outline"><i data-lucide="github" class="lucide icon-sm"></i> Source Code</a>` : ''}
+      </div>
+    `;
+    trackView('PROYEK', item.id);
+  } else if (type === 'karya') {
+    html = `
+      <span class="badge">${escapeHtml(item.kategori || 'Work')}</span>
+      <h2>${escapeHtml(item.judul)}</h2>
+      ${item.image_url ? `<div class="modal-image"><img src="${escapeHtml(item.image_url)}" alt="${escapeHtml(item.judul)}" loading="lazy" /></div>` : ''}
+      <div class="modal-meta">
+        <span><i data-lucide="calendar" class="lucide icon-sm"></i> ${escapeHtml(item.tahun || '')}</span>
+        ${item.tags ? `<span><i data-lucide="tag" class="lucide icon-sm"></i> ${escapeHtml(item.tags)}</span>` : ''}
+      </div>
+      <div class="modal-content">${escapeHtml(item.deskripsi || '')}</div>
+    `;
   }
+
+  body.innerHTML = html;
+  modal.classList.add('active');
+  document.body.style.overflow = 'hidden';
+  
+  if (window.lucide) lucide.createIcons();
+
+  // Init accordion SETELAH DOM selesai render
+  if (type === 'artikel' || type === 'proyek') {
+    // Gunakan requestAnimationFrame untuk memastikan DOM sudah ready
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        initAccordion();
+      });
+    });
+  }
+}
+
+// ============ ACCORDION PARSER ============
+function initAccordion() {
+  const container = $('#accordion-container');
+  if (!container) return;
+
+  const content = container.innerHTML.trim();
+  if (!content) return;
+
+  // Cek apakah ada heading (h2, h3, h4)
+  const hasHeadings = /<h[2-4][\s>]/i.test(content);
+  
+  if (!hasHeadings) {
+    // Tidak ada heading → tampilkan konten biasa, tidak perlu accordion
+    return;
+  }
+
+  // Parse content menjadi sections
+  const sections = parseContentToSections(content);
+  
+  if (sections.length === 0) return;
+
+  // Build accordion HTML
+  let accordionHTML = '';
+  
+  // Intro content (sebelum heading pertama)
+  if (sections.intro && sections.intro.trim()) {
+    accordionHTML += `<div class="accordion-intro">${sections.intro}</div>`;
+  }
+
+  sections.items.forEach((section, index) => {
+    const isOpen = index === 0; // First section open by default
+    accordionHTML += `
+      <div class="accordion-item ${isOpen ? 'open' : ''}" data-index="${index}">
+        <button class="accordion-header" type="button" aria-expanded="${isOpen}">
+          <span class="accordion-title">${section.title}</span>
+          <i data-lucide="chevron-down" class="lucide accordion-icon"></i>
+        </button>
+        <div class="accordion-body" style="max-height: ${isOpen ? '2000px' : '0'};">
+          <div class="accordion-content-inner">
+            ${section.content}
+          </div>
+        </div>
+      </div>
+    `;
+  });
+
+  container.innerHTML = accordionHTML;
+  
+  if (window.lucide) lucide.createIcons();
+
+  // Attach click handlers
+  $$('.accordion-header', container).forEach(header => {
+    header.addEventListener('click', function(e) {
+      e.preventDefault();
+      toggleAccordion(this);
+    });
+  });
+}
+
+// Helper: Parse HTML content menjadi sections
+function parseContentToSections(html) {
+  const result = { intro: '', items: [] };
+  
+  // Split berdasarkan heading tags
+  const headingRegex = /<h([2-4])[^>]*>([\s\S]*?)<\/h\1>/gi;
+  const parts = html.split(headingRegex);
+  
+  // parts akan berisi: [before, level1, title1, content1, level2, title2, content2, ...]
+  // Index 0 = content sebelum heading pertama (intro)
+  
+  if (parts.length < 4) {
+    // Tidak ada heading yang valid
+    result.intro = html;
+    return result;
+  }
+
+  result.intro = parts[0] || '';
+  
+  // Process setiap section (mulai dari index 1, step 3)
+  for (let i = 1; i < parts.length; i += 3) {
+    const level = parts[i];      // 2, 3, atau 4
+    const title = parts[i + 1];  // Inner text heading
+    const content = parts[i + 2] || ''; // Content setelah heading
+    
+    // Strip HTML tags dari title untuk display
+    const cleanTitle = title.replace(/<[^>]*>/g, '').trim();
+    
+    if (cleanTitle) {
+      result.items.push({
+        level: parseInt(level),
+        title: cleanTitle,
+        content: content.trim()
+      });
+    }
+  }
+
+  return result;
+}
+
+function toggleAccordion(header) {
+  const item = header.closest('.accordion-item');
+  const body = $('.accordion-body', item);
+  const isOpen = item.classList.contains('open');
+
+  if (isOpen) {
+    // Close
+    item.classList.remove('open');
+    body.style.maxHeight = '0';
+    header.setAttribute('aria-expanded', 'false');
+  } else {
+    // Open
+    item.classList.add('open');
+    body.style.maxHeight = body.scrollHeight + 'px';
+    header.setAttribute('aria-expanded', 'true');
+  }
+}
+
+function toggleAccordion(header) {
+  const item = header.closest('.accordion-item');
+  const body = $('.accordion-body', item);
+  const isOpen = item.classList.contains('open');
+
+  // Close all other accordions (optional - hapus jika mau multiple open)
+  // $$('.accordion-item.open').forEach(openItem => {
+  //   if (openItem !== item) {
+  //     openItem.classList.remove('open');
+  //     $('.accordion-body', openItem).style.maxHeight = '0';
+  //   }
+  // });
+
+  if (isOpen) {
+    item.classList.remove('open');
+    body.style.maxHeight = '0';
+  } else {
+    item.classList.add('open');
+    body.style.maxHeight = body.scrollHeight + 'px';
+  }
+}
+
+// ============ TRACK VIEW ============
+function trackView(sheetName, itemId) {
+  if (!itemId) return;
+  
+  fetch(`${CONFIG.API_URL}?action=view&tab=${sheetName}&id=${itemId}&token=${encodeURIComponent(CONFIG.API_TOKEN)}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain' },
+    body: JSON.stringify({ action: 'view' })
+  }).catch(() => {
+    // Silent fail - tidak perlu notify user
+  });
+}
 
   function closeModal() {
     const modal = $('#modal');
@@ -839,6 +1062,28 @@ function fetchViaForm(tab) {
       return String(dateStr);
     }
   }
+
+  // ============ HTML DECODER (FIX konten mentah) ============
+function decodeHtmlEntities(str) {
+  if (!str) return '';
+  const el = document.createElement('textarea');
+  el.innerHTML = str;
+  return el.value;
+}
+
+function normalizeContent(content) {
+  if (!content) return '';
+  let out = String(content);
+  // Deteksi escaped tags seperti &lt;h2&gt; &lt;p&gt; dll
+  const escapedTagRegex = /&lt;\/?[a-zA-Z][^&]*?&gt;/;
+  let guard = 0;
+  // Decode sampai bersih (max 3x untuk double/triple escaping)
+  while (escapedTagRegex.test(out) && guard < 3) {
+    out = decodeHtmlEntities(out);
+    guard++;
+  }
+  return out;
+}
 
   // ============ THREE.JS BACKGROUND ============
   function initThree() {
