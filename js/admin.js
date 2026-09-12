@@ -19,7 +19,7 @@
     editingId: null,
     deletingId: null,
     editor: null,
-    editorMode: 'visual' // ← TAMBAHKAN INI
+    editorMode: 'visual'
   };
 
   // ============ UTILITIES ============
