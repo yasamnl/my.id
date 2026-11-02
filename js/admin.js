@@ -134,7 +134,7 @@
     loadItems();
   }
 
-  function initLogin() {
+ function initLogin() {
     $('#login-form').addEventListener('submit', async (e) => {
       e.preventDefault();
       const code = $('#admin-code').value.trim();
@@ -150,7 +150,17 @@
       btn.innerHTML = '<div class="spinner" style="width:18px;height:18px;border-width:2px;"></div> Verifying...';
 
       try {
-        const res = await fetch(`${CONFIG.API_URL}?action=login&token=${encodeURIComponent(CONFIG.API_TOKEN)}&code=${encodeURIComponent(code)}`);
+        // --- TAMBAHAN UNTUK RATE LIMITING ---
+        // Ambil atau buat Session ID (sid) unik untuk perangkat ini
+        let sid = localStorage.getItem('admin_sid');
+        if (!sid) {
+          sid = 'sid_' + Math.random().toString(36).substr(2, 9);
+          localStorage.setItem('admin_sid', sid);
+        }
+        // ------------------------------------
+
+        // Fetch dengan tambahan parameter &sid=
+        const res = await fetch(`${CONFIG.API_URL}?action=login&token=${encodeURIComponent(CONFIG.API_TOKEN)}&code=${encodeURIComponent(code)}&sid=${sid}`);
         const data = await res.json();
 
         if (data.success) {
@@ -159,7 +169,7 @@
            showLoginAlert('Access granted! Redirecting...', 'success');
            setTimeout(showDashboard, 1000);
          } else {
-           // ✅ Tampilkan pesan error asli dari backend, atau gunakan pesan default
+           // Menampilkan error asli dari backend (termasuk peringatan percobaan login/lockout)
            showLoginAlert(data.error || 'Invalid admin code', 'error');
          }
       } catch (err) {
@@ -176,7 +186,7 @@
       state.isAuthenticated = false;
       showLogin();
     });
-  }
+}
 
   function showLoginAlert(message, type) {
     const alert = $('#login-alert');
