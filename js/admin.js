@@ -154,13 +154,14 @@
         const data = await res.json();
 
         if (data.success) {
-          sessionStorage.setItem('adminSession', CONFIG.API_TOKEN);
-          state.isAuthenticated = true;
-          showLoginAlert('Access granted! Redirecting...', 'success');
-          setTimeout(showDashboard, 1000);
-        } else {
-          showLoginAlert('Invalid admin code', 'error');
-        }
+           sessionStorage.setItem('adminSession', CONFIG.API_TOKEN);
+           state.isAuthenticated = true;
+           showLoginAlert('Access granted! Redirecting...', 'success');
+           setTimeout(showDashboard, 1000);
+         } else {
+           // ✅ Tampilkan pesan error asli dari backend, atau gunakan pesan default
+           showLoginAlert(data.error || 'Invalid admin code', 'error');
+         }
       } catch (err) {
         showLoginAlert('Connection error. Please try again.', 'error');
       } finally {
