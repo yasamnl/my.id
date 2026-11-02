@@ -7,7 +7,7 @@
 
   // ============ CONFIG ============
   const CONFIG = {
-    API_URL: 'https://script.google.com/macros/s/AKfycbx1E2HUIQ47EBE_9KI0gF7TL4kjY-uI-uwLncJAFUlyZP3Fwa4ix7UoVCEOueP8268-/exec',
+    API_URL: 'https://script.google.com/macros/s/AKfycbwPubxicTXHvWdOMqy9nvlNS9kB5PnaYh3MbPr-0Gcqdd-qZrLx_ixE_SuvCVQQOaz7/exec',
     API_TOKEN: 'AIienoqhrnc526j'
   };
 
